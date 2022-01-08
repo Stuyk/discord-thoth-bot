@@ -1,0 +1,29 @@
+{
+  "name": "discord-thoth",
+  "version": "2.0.0",
+  "description": "Auto threader discord bot.",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "npm run build && node ./dist/index.js"
+  },
+  "author": "stuyk",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^13.5.0",
+    "dotenv": "^10.0.0",
+    "gun": "^0.2020.1235",
+    "typescript": "^4.5.4"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "printWidth": 120,
+    "semi": true,
+    "arrowParens": "always",
+    "trailingComma": "es5"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/gun": "^0.9.3"
+  }
+}
