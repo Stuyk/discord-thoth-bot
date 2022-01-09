@@ -31,9 +31,14 @@ async function update(isStartup = false) {
             }
         }
 
-        const msg = await threadChannel.send("Bump");
-        if (msg.deletable) {
-            msg.delete();
+        try {
+            await threadChannel.setArchived(false);
+            const msg = await threadChannel.send("Bump");
+            if (msg.deletable) {
+                msg.delete();
+            }
+        } catch (err) {
+            console.log(`[${Date.now()}] Could not unarchive thread.`);
         }
 
         console.log(`[${Date.now()}] Bumped Thread: ${threadChannel.name}`);
