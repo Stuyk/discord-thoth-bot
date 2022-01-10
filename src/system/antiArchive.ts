@@ -26,7 +26,7 @@ async function update(isStartup = false) {
                 return;
             }
 
-            if (Date.now() < threadInfo.refreshTime && !threadInfo.neverArchive) {
+            if (Date.now() < threadInfo.refreshTime || !threadInfo.neverArchive) {
                 return;
             }
         }
