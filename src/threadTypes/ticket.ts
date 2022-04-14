@@ -1,5 +1,4 @@
 import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
-import { AntiArchive } from "../system/antiArchive";
 
 const rolesToTag = ["790594226437881857"];
 
@@ -38,6 +37,4 @@ export async function createTicket(client: Client, message: Message, to: string)
     }
 
     thread.send(`Tagging Roles: ${tagList}`);
-
-    AntiArchive.register({ thread, neverArchive: false, refreshTimeInMs: 43200000 });
 }

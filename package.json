@@ -12,7 +12,6 @@
   "dependencies": {
     "discord.js": "^13.5.0",
     "dotenv": "^10.0.0",
-    "gun": "^0.2020.1235",
     "typescript": "^4.5.4"
   },
   "prettier": {
