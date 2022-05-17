@@ -42,7 +42,7 @@ export class Threader {
             return;
         }
 
-        const index = routes.findIndex((route) => route.from === message.channel.id);
+        const index = routes.findIndex((currentRoute) => currentRoute.from === message.channel.id);
         if (index <= -1) {
             return;
         }

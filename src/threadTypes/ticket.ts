@@ -1,6 +1,5 @@
 import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
-
-const rolesToTag = ["790594226437881857"];
+import { mainConfig } from "../system/mainConfig";
 
 /**
  * Create a new ticket in the specified channel.
@@ -23,7 +22,7 @@ export async function createTicket(client: Client, message: Message, to: string)
         color: "AQUA",
         footer: {
             text: `Requested by ${message.author.tag}. If someone is able to answer your question they will write in this thread. Please be patient.`,
-            iconURL: message.author.avatarURL(),
+            iconURL: message.author.avatarURL() as string,
         },
     });
 
@@ -32,8 +31,8 @@ export async function createTicket(client: Client, message: Message, to: string)
 
     let tagList = "";
 
-    for (let i = 0; i < rolesToTag.length; i++) {
-        tagList += `<@&${rolesToTag[i]}> `;
+    for (const role of mainConfig.rolesToTag) {
+        tagList += `<@&${role}> `;
     }
 
     thread.send(`Tagging Roles: ${tagList}`);

@@ -4,14 +4,17 @@
   "description": "Auto threader discord bot.",
   "main": "./dist/index.js",
   "scripts": {
+    "reinstall": "rmdir /s /q node_modules && npm install",
     "build": "npx tsc",
     "start": "npm run build && node ./dist/index.js"
   },
   "author": "stuyk",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^13.5.0",
+    "discord.js": "^13.7.0",
     "dotenv": "^10.0.0",
+    "inversify": "^6.0.1",
+    "reflect-metadata": "^0.1.13",
     "typescript": "^4.5.4"
   },
   "prettier": {
@@ -22,7 +25,6 @@
     "trailingComma": "es5"
   },
   "devDependencies": {
-    "@types/dotenv": "^8.2.0",
-    "@types/gun": "^0.9.3"
+    "@types/dotenv": "^8.2.0"
   }
 }
