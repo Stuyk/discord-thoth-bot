@@ -32,9 +32,9 @@ export async function createTicket(client: Client, message: Message, to: string)
 
     let tagList = "";
 
-    for (let i = 0; i < rolesToTag.length; i++) {
-        tagList += `<@&${rolesToTag[i]}> `;
+    for(const role of rolesToTag) {
+        tagList += `<@&${role}> `;
     }
-
+    
     thread.send(`Tagging Roles: ${tagList}`);
 }
