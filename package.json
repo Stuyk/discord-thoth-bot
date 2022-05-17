@@ -4,9 +4,9 @@
   "description": "Auto threader discord bot.",
   "main": "./dist/index.js",
   "scripts": {
-    "reinstall": "rmdir /s /q node_modules && npm install",
     "build": "npx tsc",
-    "start": "npm run build && node ./dist/index.js"
+    "start": "rmdir /s /q dist && npm run build && node ./dist/index.js",
+    "reinstall": "rmdir /s /q node_modules && npm install"
   },
   "author": "stuyk",
   "license": "MIT",

@@ -2,7 +2,7 @@ require("dotenv").config();
 
 import "reflect-metadata";
 
-import { TYPES } from "./system/types";
+import { TYPES } from "./configs/inversifyTypes";
 import { Bot } from "./system/bot";
 import container from "./configs/inversify.config";
 
