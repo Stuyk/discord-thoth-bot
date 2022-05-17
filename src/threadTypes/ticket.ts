@@ -1,5 +1,5 @@
 import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
-import { mainConfig } from "../system/mainConfig";
+import { mainConfig } from "../configs/mainConfig";
 
 /**
  * Create a new ticket in the specified channel.

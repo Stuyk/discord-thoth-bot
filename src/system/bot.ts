@@ -2,9 +2,9 @@ import { Client } from "discord.js";
 import { ActivityTypes } from "discord.js/typings/enums";
 import { injectable, inject } from "inversify";
 import { createTicket } from "../threadTypes/ticket";
-import { mainConfig } from "./mainConfig";
+import { mainConfig } from "../configs/mainConfig";
 import { Threader } from "./threader";
-import { TYPES } from "./types";
+import { TYPES } from "../configs/inversifyTypes";
 
 @injectable()
 export class Bot {

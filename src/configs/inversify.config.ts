@@ -1,8 +1,8 @@
 require("dotenv").config();
 import { Container } from "inversify";
 import { Client, Intents } from "discord.js";
-import { TYPES } from "./types";
-import { Bot } from "./bot";
+import { Bot } from "../system/bot";
+import { TYPES } from "./inversifyTypes";
 
 let container = new Container();
 

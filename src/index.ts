@@ -3,8 +3,8 @@ require("dotenv").config();
 import "reflect-metadata";
 
 import { TYPES } from "./system/types";
-import container from "./system/inversify.config";
 import { Bot } from "./system/bot";
+import container from "./configs/inversify.config";
 
 let bot = container.get<Bot>(TYPES.Bot);
 bot.listen()
