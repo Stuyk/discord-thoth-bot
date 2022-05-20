@@ -10,7 +10,7 @@ const routes: Array<{
 
 @autoInjectable()
 export class Threader {
-    constructor(@inject(delay(() => Client)) private readonly client: Client) {
+    constructor(@inject("Client") private readonly client: Client) {
         this.client = container.resolve("Client");
     }
     /**
