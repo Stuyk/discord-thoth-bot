@@ -1,4 +1,7 @@
-import { Client, Message } from "discord.js";
+import "reflect-metadata";
+import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
+import { container, inject, singleton } from "tsyringe";
+import { config } from "../configs";
 
 const routes: Array<{
     from: string;
@@ -6,18 +9,11 @@ const routes: Array<{
     callback: (client: Client, message: Message, to: string) => Promise<void>;
 }> = [];
 
-let client: Client;
-
+@singleton()
 export class Threader {
-    /**
-     * Get the client instance from entrypoint to here.
-     * @param {Client} _client - The client object that is calling the function.
-     * @returns None
-     */
-    static init(_client: Client) {
-        client = _client;
+    constructor(@inject("Client") private readonly client: Client) {
+        this.client = container.resolve("Client");
     }
-
     /**
      * Bind all messages in a specific channel to go to create a thread in a specific channel.
      * @static
@@ -26,7 +22,11 @@ export class Threader {
      * @param {(message: Message, to: string) => void} callback
      * @memberof Threader
      */
-    static bind(from: string, to: string, callback: (client: Client, message: Message, to: string) => Promise<void>) {
+    public bindThreader(
+        from: string,
+        to: string,
+        callback: (client: Client, message: Message, to: string) => Promise<void>
+    ) {
         routes.push({ from, to, callback });
     }
 
@@ -37,12 +37,12 @@ export class Threader {
      * @return {*}
      * @memberof Threader
      */
-    static handle(message: Message): void {
+    public handle(message: Message): void {
         if (message.author.bot) {
             return;
         }
 
-        const index = routes.findIndex((route) => route.from === message.channel.id);
+        const index = routes.findIndex((currentRoute) => currentRoute.from === message.channel.id);
         if (index <= -1) {
             return;
         }
@@ -52,7 +52,50 @@ export class Threader {
             return;
         }
 
-        console.log(`[${Date.now()}] Processed Request on Channel: ${message.channel.id}`);
-        route.callback(client, message, route.to);
+        console.log(
+            `[${new Date(Date.now()).toLocaleTimeString("en-US", {
+                hour12: true,
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
+            })}] Processed Request on Channel: ${message.channelId}`
+        );
+        route.callback(this.client, message, route.to);
+    }
+
+    /**
+     * It creates a ticket in a specified channel, and tags a specified role
+     * @param {Client} client - Client - The client object
+     * @param {Message} message - Message - The message that was sent to the bot
+     * @param {string} to - string - The channel ID to send the ticket to
+     */
+    public async createTicket(client: Client, message: Message, to: string): Promise<void> {
+        const content = message.content;
+        const authorText = `${message.author.username}#${message.author.discriminator}`;
+        const threadName = `${authorText} Ticket`;
+        const author = `<@!${message.author.id}>`;
+        await message.delete();
+
+        const channel = client.channels.cache.get(to) as TextChannel;
+        const embed = new MessageEmbed({
+            title: `Support Ticket for ${authorText}`,
+            description: `${content}`,
+            color: "AQUA",
+            footer: {
+                text: `Requested by ${message.author.tag}. If someone is able to answer your question they will write in this thread. Please be patient.`,
+                iconURL: message.author.avatarURL() ?? "",
+            },
+        });
+
+        const newMessage = await channel.send({ embeds: [embed], content: `${author}` });
+        const thread = await newMessage.startThread({ name: threadName, reason: `Support Ticket Request` });
+
+        let tagList = "";
+
+        for (const role of config.rolesToTag) {
+            tagList += `<@&${role}>, `;
+        }
+
+        thread.send(`Tagging Roles: ${tagList}`);
     }
 }

@@ -1,26 +1,16 @@
-import { Client, Intents } from "discord.js";
-import { ActivityTypes } from "discord.js/typings/enums";
-import { getClientToken } from "./system/config";
-import { Threader } from "./system/threader";
-import { createTicket } from "./threadTypes/ticket";
+import "reflect-metadata";
+import { container } from "tsyringe";
+import { Bot } from "./system/bot";
+import "./configs/tsyringe/container";
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-
-const supportTicketChannels = {
-    from: "926540793701888081",
-    to: "926541432892821514",
-};
-
-client.on("ready", () => {
-    client.user.setActivity("Support Requests", { type: ActivityTypes.LISTENING });
-    client.on("messageCreate", Threader.handle);
-
-    // Threads for Channels to Watch for
-    Threader.init(client);
-    Threader.bind(supportTicketChannels.from, supportTicketChannels.to, createTicket);
-
-    // Log the Bot is ready
-    console.log(`[${Date.now()}] Started Thoth Successfully. Listening for Messages.`);
+let bot = container.resolve(Bot);
+bot.listen().then(() => {
+    console.log(
+        `[${new Date(Date.now()).toLocaleTimeString("en-US", {
+            hour12: true,
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+        })}] Started Thoth Successfully. Listening for Messages.`
+    );
 });
-
-client.login(getClientToken());
