@@ -63,6 +63,12 @@ export class Threader {
         route.callback(this.client, message, route.to);
     }
 
+    /**
+     * It creates a ticket in a specified channel, and tags a specified role
+     * @param {Client} client - Client - The client object
+     * @param {Message} message - Message - The message that was sent to the bot
+     * @param {string} to - string - The channel ID to send the ticket to
+     */
     public async createTicket(client: Client, message: Message, to: string): Promise<void> {
         const content = message.content;
         const authorText = `${message.author.username}#${message.author.discriminator}`;
