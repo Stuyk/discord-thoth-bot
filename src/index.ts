@@ -1,7 +1,7 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 import { container } from "tsyringe";
 import { Bot } from "./system/bot";
-import "./tsyringe/container";
+import "./configs/tsyringe/container";
 
 let bot = container.resolve(Bot);
 bot.listen().then(() => {

@@ -1,6 +1,7 @@
 import "reflect-metadata";
-import { Client, Message } from "discord.js";
-import { autoInjectable, container, delay, inject } from "tsyringe";
+import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
+import { container, inject, singleton } from "tsyringe";
+import { config } from "../configs";
 
 const routes: Array<{
     from: string;
@@ -8,7 +9,7 @@ const routes: Array<{
     callback: (client: Client, message: Message, to: string) => Promise<void>;
 }> = [];
 
-@autoInjectable()
+@singleton()
 export class Threader {
     constructor(@inject("Client") private readonly client: Client) {
         this.client = container.resolve("Client");
@@ -60,5 +61,35 @@ export class Threader {
             })}] Processed Request on Channel: ${message.channelId}`
         );
         route.callback(this.client, message, route.to);
+    }
+
+    public async createTicket(client: Client, message: Message, to: string): Promise<void> {
+        const content = message.content;
+        const authorText = `${message.author.username}#${message.author.discriminator}`;
+        const threadName = `${authorText} Ticket`;
+        const author = `<@!${message.author.id}>`;
+        await message.delete();
+
+        const channel = client.channels.cache.get(to) as TextChannel;
+        const embed = new MessageEmbed({
+            title: `Support Ticket for ${authorText}`,
+            description: `${content}`,
+            color: "AQUA",
+            footer: {
+                text: `Requested by ${message.author.tag}. If someone is able to answer your question they will write in this thread. Please be patient.`,
+                iconURL: message.author.avatarURL() ?? "",
+            },
+        });
+
+        const newMessage = await channel.send({ embeds: [embed], content: `${author}` });
+        const thread = await newMessage.startThread({ name: threadName, reason: `Support Ticket Request` });
+
+        let tagList = "";
+
+        for (const role of config.rolesToTag) {
+            tagList += `<@&${role}>, `;
+        }
+
+        thread.send(`Tagging Roles: ${tagList}`);
     }
 }

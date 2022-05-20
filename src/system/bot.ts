@@ -1,13 +1,14 @@
 import "reflect-metadata";
-require("dotenv").config();
+
 import { Client } from "discord.js";
 import { ActivityTypes } from "discord.js/typings/enums";
 import { Threader } from "./threader";
 import { config } from "../configs";
-import { createTicket } from "../threadTypes/ticket";
-import { autoInjectable, container, inject } from "tsyringe";
+import { container, inject, singleton } from "tsyringe";
 
-@autoInjectable()
+require("dotenv").config();
+
+@singleton()
 export class Bot {
     constructor(
         @inject("Client") private readonly client: Client,
@@ -27,10 +28,10 @@ export class Bot {
             this.threader.bindThreader(
                 config.supportTicketChannels.from,
                 config.supportTicketChannels.to,
-                createTicket
+                this.threader.createTicket.bind(this)
             );
         });
 
-        return this.client.login(process.env.DISCORD_BOT_SECRET as string);
+        return this.client.login(process.env.DISCORD_BOT_SECRET ?? "");
     }
 }

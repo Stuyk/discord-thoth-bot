@@ -5,7 +5,8 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "rmdir /s /q dist && npm run build && node ./dist/index.js",
+    "start": "npm run build && node ./dist/index.js",
+    "rebuild": "rmdir /s /q dist && npm run build && node ./dist/index.js",
     "reinstall": "rmdir /s /q node_modules && npm install"
   },
   "author": "stuyk",
