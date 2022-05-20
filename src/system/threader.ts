@@ -1,4 +1,6 @@
+import "reflect-metadata";
 import { Client, Message } from "discord.js";
+import { autoInjectable, container, delay, inject } from "tsyringe";
 
 const routes: Array<{
     from: string;
@@ -6,18 +8,11 @@ const routes: Array<{
     callback: (client: Client, message: Message, to: string) => Promise<void>;
 }> = [];
 
-let client: Client;
-
+@autoInjectable()
 export class Threader {
-    /**
-     * Get the client instance from entrypoint to here.
-     * @param {Client} _client - The client object that is calling the function.
-     * @returns None
-     */
-    static init(_client: Client) {
-        client = _client;
+    constructor(@inject(delay(() => Client)) private readonly client: Client) {
+        this.client = container.resolve("Client");
     }
-
     /**
      * Bind all messages in a specific channel to go to create a thread in a specific channel.
      * @static
@@ -26,7 +21,11 @@ export class Threader {
      * @param {(message: Message, to: string) => void} callback
      * @memberof Threader
      */
-    static bind(from: string, to: string, callback: (client: Client, message: Message, to: string) => Promise<void>) {
+    public bindThreader(
+        from: string,
+        to: string,
+        callback: (client: Client, message: Message, to: string) => Promise<void>
+    ) {
         routes.push({ from, to, callback });
     }
 
@@ -37,7 +36,7 @@ export class Threader {
      * @return {*}
      * @memberof Threader
      */
-    static handle(message: Message): void {
+    public handle(message: Message): void {
         if (message.author.bot) {
             return;
         }
@@ -52,7 +51,14 @@ export class Threader {
             return;
         }
 
-        console.log(`[${Date.now()}] Processed Request on Channel: ${message.channel.id}`);
-        route.callback(client, message, route.to);
+        console.log(
+            `[${new Date(Date.now()).toLocaleTimeString("en-US", {
+                hour12: true,
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
+            })}] Processed Request on Channel: ${message.channelId}`
+        );
+        route.callback(this.client, message, route.to);
     }
 }

@@ -1,16 +1,16 @@
-require("dotenv").config();
-
-import "reflect-metadata";
-
-import { TYPES } from "./configs/inversifyTypes";
+import 'reflect-metadata';
+import { container } from "tsyringe";
 import { Bot } from "./system/bot";
-import container from "./configs/inversify.config";
+import "./tsyringe/container";
 
-let bot = container.get<Bot>(TYPES.Bot);
-bot.listen()
-    .then(() => {
-        console.log("Thoth has successfully logged in.");
-    })
-    .catch((error) => {
-        console.log("An error occured! => ", error);
-    });
+let bot = container.resolve(Bot);
+bot.listen().then(() => {
+    console.log(
+        `[${new Date(Date.now()).toLocaleTimeString("en-US", {
+            hour12: true,
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+        })}] Started Thoth Successfully. Listening for Messages.`
+    );
+});

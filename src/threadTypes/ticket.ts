@@ -1,5 +1,5 @@
 import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
-import { mainConfig } from "../configs/mainConfig";
+import { config } from "../configs";
 
 /**
  * Create a new ticket in the specified channel.
@@ -8,7 +8,7 @@ import { mainConfig } from "../configs/mainConfig";
  * @param {string} to - The channel ID of the channel to send the ticket to.
  * @returns None
  */
-export async function createTicket(client: Client, message: Message, to: string) {
+export async function createTicket(client: Client, message: Message, to: string): Promise<void> {
     const content = message.content;
     const authorText = `${message.author.username}#${message.author.discriminator}`;
     const threadName = `${authorText} Ticket`;
@@ -31,7 +31,7 @@ export async function createTicket(client: Client, message: Message, to: string)
 
     let tagList = "";
 
-    for (const role of mainConfig.rolesToTag) {
+    for (const role of config.rolesToTag) {
         tagList += `<@&${role}>`;
     }
 

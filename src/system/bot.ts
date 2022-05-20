@@ -1,19 +1,20 @@
+import "reflect-metadata";
+require("dotenv").config();
 import { Client } from "discord.js";
 import { ActivityTypes } from "discord.js/typings/enums";
-import { injectable, inject } from "inversify";
-import { createTicket } from "../threadTypes/ticket";
-import { mainConfig } from "../configs/mainConfig";
 import { Threader } from "./threader";
-import { TYPES } from "../configs/inversifyTypes";
+import { config } from "../configs";
+import { createTicket } from "../threadTypes/ticket";
+import { autoInjectable, container, inject } from "tsyringe";
 
-@injectable()
+@autoInjectable()
 export class Bot {
-    private client: Client;
-    private readonly token: string;
-
-    constructor(@inject(TYPES.Client) client: Client, @inject(TYPES.Token) token: string) {
-        this.client = client;
-        this.token = token;
+    constructor(
+        @inject("Client") private readonly client: Client,
+        @inject("Threader") private readonly threader: Threader
+    ) {
+        this.client = container.resolve("Client");
+        this.threader = container.resolve("Threader");
     }
 
     public listen(): Promise<string> {
@@ -21,16 +22,15 @@ export class Bot {
             if (this.client.user) {
                 this.client.user.setActivity("Support Requests", { type: ActivityTypes.LISTENING });
             }
-            this.client.on("messageCreate", Threader.handle);
 
-            // Threads for Channels to Watch for
-            Threader.init(this.client);
-            Threader.bind(mainConfig.supportTicketChannels.from, mainConfig.supportTicketChannels.to, createTicket);
-
-            // Log the Bot is ready
-            console.log(`[${Date.now()}] Started Thoth Successfully. Listening for Messages.`);
+            this.client.on("messageCreate", this.threader.handle.bind(this));
+            this.threader.bindThreader(
+                config.supportTicketChannels.from,
+                config.supportTicketChannels.to,
+                createTicket
+            );
         });
 
-        return this.client.login(this.token);
+        return this.client.login(process.env.DISCORD_BOT_SECRET as string);
     }
 }
