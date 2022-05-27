@@ -74,9 +74,9 @@ export class Threader {
         const authorText = `${message.author.username}#${message.author.discriminator}`;
         const threadName = `${authorText} Ticket`;
         const author = `<@!${message.author.id}>`;
-        
+
         if(!message.member?.roles.cache.has(config.requiredRoleForUse)) {
-            await message.channel.send(`You do not have the required role to use this command. Check out https://www.patreon.com/stuyk`);
+            await message.channel.send(config.errorMessage);
             await message.delete();
             return;
         }

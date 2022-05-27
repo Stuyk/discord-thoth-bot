@@ -5,4 +5,5 @@ export const config = {
         to: "979552193835331654",
     },
     requiredRoleForUse: "976141715197009920",
+    errorMessage: 'You do not have the required role to use this command. Check out https://www.patreon.com/stuyk'
 };
