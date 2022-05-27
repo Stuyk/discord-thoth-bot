@@ -74,12 +74,14 @@ export class Threader {
         const authorText = `${message.author.username}#${message.author.discriminator}`;
         const threadName = `${authorText} Ticket`;
         const author = `<@!${message.author.id}>`;
-
-        if(!message.member?.roles.cache.has(config.requiredRoleForUse)) {
+        const userRoles = message.member?.roles.cache.map((role) => role.id);
+        
+        if(!userRoles?.some((role) => config.rolesAllowedToUse.includes(role))) {
             await message.channel.send(config.errorMessage);
             await message.delete();
             return;
         }
+
         await message.delete();
 
         const channel = client.channels.cache.get(to) as TextChannel;
