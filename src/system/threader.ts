@@ -75,14 +75,15 @@ export class Threader {
         const threadName = `${authorText} Ticket`;
         const author = `<@!${message.author.id}>`;
         const userRoles = message.member?.roles.cache.map((role) => role.id);
-        
-        if(!userRoles?.some((role) => config.rolesAllowedToUse.includes(role))) {
-            await message.channel.send(config.errorMessage);
-            await message.delete();
-            return;
-        }
 
         await message.delete();
+
+        if (!userRoles?.some((role) => config.rolesAllowedToUse.includes(role))) {
+            await message.channel.send(
+                "You do not have the required role to use this feature. Check out https://www.patreon.com/stuyk"
+            );
+            return;
+        }
 
         const channel = client.channels.cache.get(to) as TextChannel;
         const embed = new MessageEmbed({
