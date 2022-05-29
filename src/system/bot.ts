@@ -4,7 +4,7 @@ import { Client } from "discord.js";
 import { ActivityTypes } from "discord.js/typings/enums";
 import { Threader } from "./threader";
 import { config } from "../configs";
-import { container, inject, singleton } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 
 require("dotenv").config();
 
@@ -13,10 +13,7 @@ export class Bot {
     constructor(
         @inject("Client") private readonly client: Client,
         @inject("Threader") private readonly threader: Threader
-    ) {
-        this.client = container.resolve("Client");
-        this.threader = container.resolve("Threader");
-    }
+    ) {}
 
     public listen(): Promise<string> {
         this.client.on("ready", () => {

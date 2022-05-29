@@ -37,7 +37,7 @@ export class Threader {
      * @return {*}
      * @memberof Threader
      */
-    public handle(message: Message): void {
+    public async handle(message: Message): Promise<void> {
         if (message.author.bot) {
             return;
         }
@@ -74,7 +74,16 @@ export class Threader {
         const authorText = `${message.author.username}#${message.author.discriminator}`;
         const threadName = `${authorText} Ticket`;
         const author = `<@!${message.author.id}>`;
+        const userRoles = message.member?.roles.cache.map((role) => role.id);
+
         await message.delete();
+
+        if (!userRoles?.some((role) => config.rolesAllowedToUse.includes(role))) {
+            await message.channel.send(
+                "You do not have the required role to use this feature. Check out https://www.patreon.com/stuyk"
+            );
+            return;
+        }
 
         const channel = client.channels.cache.get(to) as TextChannel;
         const embed = new MessageEmbed({
